@@ -1,11 +1,12 @@
 bibentry(
-  bibtype  = "Article",
-  title    = ,
-  author   = ,
-  journal  = ,
-  year     = ,
-  volume   = ,
-  number   = ,
-  pages    = ,
-  doi      =
+  bibtype  = "Manual",
+  title    = "JTT: Consistent clustering for group-wise linear regression",
+  author   = person(
+               "M.", "Ohishi",
+               email = "mineaki.ohishi.a4@tohoku.ac.jp",
+               role = c("aut", "cre", "cph")
+             ),
+  year     = 2025,
+  note     = "R package version 0.1.0",
+  url      = "https://github.com/ohishim/JTT"
 )
