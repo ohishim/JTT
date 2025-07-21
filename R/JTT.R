@@ -13,11 +13,13 @@
 #' @param X a matrix of explanatory variables without intercept (intercept is
 #'     automatically included)
 #' @param group a vector of group indexes
-#' @param adj a matrix with two columns expressing adjacency among groups
+#' @param adj a matrix with two columns expressing adjacency among groups;
+#'     each row is a pair of indexes of adjacent groups
 #' @param PSE post selection estimation; `"OLS"` (default) or `"penalized"`
-#' @param alpha a penalty paramer of GCp criterion for JTT score
-#' @param pse.alpha a penalty parameter of GCp criterion for post selection
-#'     estimation when `PSE = "penalized"`
+#' @param alpha a penalty parameter of \eqn{GC_p} criterion for JTT score;
+#'     default (`NULL`) is \eqn{HCGC_p} criterion
+#' @param pse.alpha a penalty parameter of \eqn{GC_p} criterion for post selection
+#'     estimation when `PSE = "penalized"`; default (`NULL`) is \eqn{MC_p} criterion
 #' @param Rcpp if `TRUE`, C++ codes are used
 #'
 #' @return a list with the following elements:
@@ -116,8 +118,6 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
 
   m. <- length(G)
 
-  # cluster <- map(1:length(G), ~cbind(c=.x, g=G[[.x]])) %>% exec(rbind, !!!.) %>%
-  #   as.data.frame %>% arrange(g) %>% use_series(c)
   cluster <- imap_dfr(G, ~data.frame(c=.y, g=.x)) %>% arrange(g) %>% pull(c)
 
   if(PSE == "OLS" | m. == 1)
@@ -135,11 +135,13 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
     }
   } else if(PSE == "penalized")
   {
+    cE <- cbind(cluster[E[,1]], cluster[E[,2]]) %>% apply(1, sort) %>% t %>%
+      unique %>% magrittr::extract(.[,1] != .[,2],)
+
     PSEres <- penPSE(
       y, X,
       group = cluster[group],
-      adj = cbind(cluster[adj[,1]], cluster[adj[,2]]) %>% unique %>%
-        magrittr::extract(.[,1] - .[,2] != 0,),
+      adj = rbind(cE, cE[,c(2,1)]),
       alpha = pse.alpha
     )
 
@@ -152,8 +154,6 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
     )
   }
 
-  # Fit <- map(1:m, ~drop(X_[[.x]]%*%Coef[.x,])) %>% unlist %>%
-  #   data.frame(fit=., id=unlist(id_)) %>% arrange(id) %>% dplyr::pull(fit)
   Fit <- map_dfr(1:m, ~data.frame(fit=drop(X_[[.x]]%*%Coef[.x,]), id=id_[[.x]])) %>%
     arrange(id) %>% pull(fit)
 

@@ -43,8 +43,7 @@ a list with the following elements:
 \item{SNR}{SNR}
 
 \item{SDC}{a dataframe with pairs of groups that they reside different clusters
-and standardized difference of coefficients
-}
+and standardized difference of coefficients}
 }
 \description{
 \code{genData} This function generates simulation data (v0.1.0)

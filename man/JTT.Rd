@@ -23,14 +23,16 @@ automatically included)}
 
 \item{group}{a vector of group indexes}
 
-\item{adj}{a matrix with two columns expressing adjacency among groups}
+\item{adj}{a matrix with two columns expressing adjacency among groups;
+each row is a pair of indexes of adjacent groups}
 
 \item{PSE}{post selection estimation; \code{"OLS"} (default) or \code{"penalized"}}
 
-\item{alpha}{a penalty paramer of GCp criterion for JTT score}
+\item{alpha}{a penalty parameter of \eqn{GC_p} criterion for JTT score;
+default (\code{NULL}) is \eqn{HCGC_p} criterion}
 
-\item{pse.alpha}{a penalty parameter of GCp criterion for post selection
-estimation when \code{PSE = "penalized"}}
+\item{pse.alpha}{a penalty parameter of \eqn{GC_p} criterion for post selection
+estimation when \code{PSE = "penalized"}; default (\code{NULL}) is \eqn{MC_p} criterion}
 
 \item{Rcpp}{if \code{TRUE}, C++ codes are used}
 }

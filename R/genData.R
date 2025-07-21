@@ -38,8 +38,7 @@
 #' \item{SNR}{SNR}
 #'
 #' \item{SDC}{a dataframe with pairs of groups that they reside different clusters
-#'     and standardized difference of coefficients
-#' }
+#'     and standardized difference of coefficients}
 #'
 #' @export
 #' @examples
