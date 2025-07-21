@@ -4,9 +4,9 @@
 #'
 #' @useDynLib JTT, .registration = TRUE
 #'
-#' @importFrom dplyr arrange
-#' @importFrom magrittr %>% equals extract not set_names set_rownames use_series
-#' @importFrom purrr exec map map_chr map_dbl map_lgl transpose
+#' @importFrom dplyr arrange pull
+#' @importFrom magrittr %>% equals extract not set_names set_rownames
+#' @importFrom purrr exec imap_dfr map map_chr map_dbl map_dfr map_lgl transpose
 #' @importFrom stats optimize
 #'
 #' @param y a vector of a response variable
@@ -42,6 +42,14 @@
 JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FALSE){
 
   t1 <- proc.time()[3]
+
+  if(Rcpp)
+  {
+    chol_solve <- chol_solve2
+  } else
+  {
+    chol_solve <- chol_solve1
+  }
 
   n <- length(y); m <- unique(group) %>% length; p <- ncol(X) + 1
   mp <- m*p; N <- n - mp
@@ -108,8 +116,9 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
 
   m. <- length(G)
 
-  cluster <- map(1:m., ~cbind(c=.x, g=G[[.x]])) %>% exec(rbind, !!!.) %>%
-    as.data.frame %>% arrange(g) %>% use_series(c)
+  # cluster <- map(1:length(G), ~cbind(c=.x, g=G[[.x]])) %>% exec(rbind, !!!.) %>%
+  #   as.data.frame %>% arrange(g) %>% use_series(c)
+  cluster <- imap_dfr(G, ~data.frame(c=.y, g=.x)) %>% arrange(g) %>% pull(c)
 
   if(PSE == "OLS" | m. == 1)
   {
@@ -143,8 +152,10 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
     )
   }
 
-  Fit <- map(1:m, ~drop(X_[[.x]]%*%Coef[.x,])) %>% unlist %>%
-    data.frame(fit=., id=unlist(id_)) %>% arrange(id) %>% use_series(fit)
+  # Fit <- map(1:m, ~drop(X_[[.x]]%*%Coef[.x,])) %>% unlist %>%
+  #   data.frame(fit=., id=unlist(id_)) %>% arrange(id) %>% dplyr::pull(fit)
+  Fit <- map_dfr(1:m, ~data.frame(fit=drop(X_[[.x]]%*%Coef[.x,]), id=id_[[.x]])) %>%
+    arrange(id) %>% pull(fit)
 
   t2 <- proc.time()[3]
 

@@ -29,9 +29,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// chol_solve2
+Eigen::VectorXd chol_solve2(const Eigen::MatrixXd& M, const Eigen::VectorXd& b);
+RcppExport SEXP _JTT_chol_solve2(SEXP MSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(chol_solve2(M, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_JTT_JTT_score", (DL_FUNC) &_JTT_JTT_score, 8},
+    {"_JTT_chol_solve2", (DL_FUNC) &_JTT_chol_solve2, 2},
     {NULL, NULL, 0}
 };
 

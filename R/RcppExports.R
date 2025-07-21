@@ -2,6 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 JTT_score <- function(q, m, E, Xy_, yPy, M_, D0, alp) {
-    .Call('_JTT_JTT_score', PACKAGE = 'JTT', q, m, E, Xy_, yPy, M_, D0, alp)
+    .Call(`_JTT_JTT_score`, q, m, E, Xy_, yPy, M_, D0, alp)
+}
+
+chol_solve2 <- function(M, b) {
+    .Call(`_JTT_chol_solve2`, M, b)
 }
 

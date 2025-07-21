@@ -1,5 +1,5 @@
 
-chol_solve <- function(M, b){
+chol_solve1 <- function(M, b){
 
   R <- chol(M)
   y <- backsolve(R, b, transpose=TRUE)
@@ -174,6 +174,6 @@ penPSE <- function(y, X, group, adj, alpha=NULL){
 }
 
 usethis::use_data(
-  chol_solve, corM, create.cluster, true.cluster, penPSE, .penPSE,
+  chol_solve1, corM, create.cluster, true.cluster, penPSE, .penPSE,
   internal=TRUE, overwrite=TRUE
 )
