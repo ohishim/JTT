@@ -81,7 +81,7 @@ true.cluster <- function(m, m.){
   return(Tcluster %>% set_names(paste0("g", 1:m.)))
 }
 
-penPSE <- function(y, X, group, adj, chol_solve, alpha=NULL){
+penPSE <- function(y, X, group, adj, chol_solve, .penPSE, alpha=NULL){
 
   m <- unique(group) %>% length
 

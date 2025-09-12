@@ -14,7 +14,7 @@ genData(n0, p, m = 10, case = 1, rho = 0.5, SNR = NULL)
 \item{m}{the number of groups (one of 10, 20 and 50)}
 
 \item{case}{true cluster pattern; the number of the true clusters is
-\eqn{m_\ast = 0.3 m} for case 1 and $m_\ast = 0.6 m$ for case 2}
+\eqn{m_\ast = 0.3 m} for case 1 and \eqn{m_\ast = 0.6 m} for case 2}
 
 \item{rho}{a parameter of autocorrelation matrix for a matrix of explanatory
 variables}

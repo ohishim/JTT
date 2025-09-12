@@ -147,6 +147,7 @@ JTT <- function(
       group = cluster[group],
       adj = rbind(cE, cE[,c(2,1)]),
       chol_solve,
+      .penPSE,
       alpha = pse.alpha
     )
 
