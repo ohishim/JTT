@@ -5,8 +5,9 @@
 #' @useDynLib JTT, .registration = TRUE
 #'
 #' @importFrom dplyr arrange pull
+#' @importFrom igraph add_edges components make_empty_graph
 #' @importFrom magrittr %>% equals extract not set_names set_rownames
-#' @importFrom purrr exec imap_dfr map map_chr map_dbl map_dfr map_lgl transpose
+#' @importFrom purrr exec map map_chr map_dbl map_dfr map_lgl transpose
 #' @importFrom stats optimize
 #'
 #' @param y a vector of a response variable
@@ -41,7 +42,9 @@
 #' @examples
 #' #JTT(y, X, group, adj)
 
-JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FALSE){
+JTT <- function(
+  y, X, group, adj, PSE="penalized", alpha=NULL, pse.alpha=NULL, Rcpp=TRUE
+){
 
   t1 <- proc.time()[3]
 
@@ -110,15 +113,16 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
 
   if(all(score > 0))
   {
-    G <- as.list(1:m)
+    cluster <- 1:m
+    G <- as.list(cluster)
+    m. <- m
   } else
   {
-    G <- create.cluster(E[score <= 0,,drop=F], m)
+    CC <- create.cluster(E[score <= 0,,drop=F], m)
+    G <- CC$cluster
+    cluster <- CC$labels
+    m. <- length(G)
   }
-
-  m. <- length(G)
-
-  cluster <- imap_dfr(G, ~data.frame(c=.y, g=.x)) %>% arrange(g) %>% pull(c)
 
   if(PSE == "OLS" | m. == 1)
   {
@@ -142,6 +146,7 @@ JTT <- function(y, X, group, adj, PSE="OLS", alpha=NULL, pse.alpha=NULL, Rcpp=FA
       y, X,
       group = cluster[group],
       adj = rbind(cE, cE[,c(2,1)]),
+      chol_solve,
       alpha = pse.alpha
     )
 

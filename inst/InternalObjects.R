@@ -19,37 +19,14 @@ corM <- function(k, rho){
 
 create.cluster <- function(idx, m){
 
-  Clus <- list(idx[1,])
-  g <- 1
+  G <- make_empty_graph(n = m, directed = FALSE) %>% add_edges(as.vector(t(idx)))
 
-  if(nrow(idx) > 1)
-  {
-    for(i in 2:nrow(idx))
-    {
-      e <- idx[i,]
-      j <- Clus %>% map_lgl(~{intersect(.x, e) %>% length %>% equals(0) %>% not}) %>% which
+  labs <- components(G)$membership
 
-      if(length(j) == 0)
-      {
-        g <- g + 1
-        Clus[[g]] <- e
-      } else if(length(j) == 1)
-      {
-        Clus[[j]] <- c(Clus[[j]], e) %>% unique %>% sort
-      } else
-      {
-        Clus[[j[1]]] <- Clus[j] %>% unlist %>% sort
-        Clus <- Clus[-j[2]]
-        g <- g - 1
-      }
-    }
-  }
-
-  Clus <- setdiff(1:m, unlist(Clus)) %>% map(~.x) %>% c(Clus, .)
-
-  return(Clus[
-    Clus %>% map_dbl(~.x[1]) %>% order
-  ])
+  return(list(
+    cluster = split(1:m, labs),
+    labels = labs
+  ))
 }
 
 true.cluster <- function(m, m.){
@@ -78,14 +55,14 @@ true.cluster <- function(m, m.){
     }
   } else if(m == 50)
   {
-    if(m. == 10)
+    if(m. == 15)
     {
       Tcluster <- list(
-        c(1, 2, 3, 4, 8, 14), c(5, 16, 17, 19, 20),
+        c(1, 2, 3, 8), c(4, 14), c(5, 16, 17),
         c(6, 7, 18, 21, 22, 23), c(9, 10, 11, 13),
-        c(12, 31, 40), c(15, 26, 27, 33, 34, 41, 49),
-        c(24, 32, 45, 46), c(25, 29, 30, 35, 37, 38, 39, 44),
-        c(28, 47, 48, 50), c(36, 42, 43)
+        c(12, 31, 40), c(15, 26, 27, 33, 49),  c(19, 20),
+        c(24, 35, 45, 46), c(25, 30, 39, 44),
+        c(28, 47, 48, 50), c(29, 37, 38), 32, c(34, 41), c(36, 42, 43)
       )
     }
 
@@ -104,7 +81,7 @@ true.cluster <- function(m, m.){
   return(Tcluster %>% set_names(paste0("g", 1:m.)))
 }
 
-penPSE <- function(y, X, group, adj, alpha=NULL){
+penPSE <- function(y, X, group, adj, chol_solve, alpha=NULL){
 
   m <- unique(group) %>% length
 

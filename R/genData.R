@@ -11,8 +11,9 @@
 #' @param n0 the common sample size for each group
 #' @param p the number of explanatory variables including intercept
 #' @param m the number of groups (one of 10, 20 and 50)
-#' @param case true cluster pattern (1 or 2)
-#' @param rho a parameter of autocorrelation matrix for a matrix of expnalatory
+#' @param case true cluster pattern; the number of the true clusters is
+#'     \eqn{m_\ast = 0.3 m} for case 1 and $m_\ast = 0.6 m$ for case 2
+#' @param rho a parameter of autocorrelation matrix for a matrix of explanatory
 #'   variables
 #' @param SNR SNR value
 
@@ -59,7 +60,7 @@ genData <- function(n0, p, m=10, case=1, rho=0.5, SNR=NULL){
     m. <- ifelse(case==1, 6, 12)
   } else if(m == 50)
   {
-    m. <- ifelse(case==1, 10, 30)
+    m. <- ifelse(case==1, 15, 30)
   }
 
   TC <- true.cluster(m, m.)

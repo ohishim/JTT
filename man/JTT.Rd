@@ -9,10 +9,10 @@ JTT(
   X,
   group,
   adj,
-  PSE = "OLS",
+  PSE = "penalized",
   alpha = NULL,
   pse.alpha = NULL,
-  Rcpp = FALSE
+  Rcpp = TRUE
 )
 }
 \arguments{
