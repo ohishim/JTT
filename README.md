@@ -68,3 +68,9 @@ res$cluster
 #> $c3
 #> [1] 7 8
 ```
+
+## Reference
+
+1.  Ohishi, M. & Oda, R. (2025). KOO method-based consistent clustering
+    for group-wise linear regression with graph structure. arXiv:
+    [2509.11103](https://arxiv.org/abs/2509.11103).
